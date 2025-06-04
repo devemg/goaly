@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: TodaysProgress(),
         ),
-        GoalsList()
+        GoalsList(showActions: true)
       ],
     );
   }

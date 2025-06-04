@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 class GoalsList extends StatelessWidget {
+  final bool showActions;
+
+  const GoalsList({super.key, required this.showActions });
+
   @override
   Widget build(BuildContext context) {
+    double verticalPadding = showActions ? 15 : 0;
     return Expanded(
       child: ListView.builder(
         itemCount: 11,
@@ -10,11 +15,11 @@ class GoalsList extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: verticalPadding),
               child: Column(
                 spacing: 10,
                 children: [
-                  Row(
+                  if (showActions) Row(
                     children: [
                       FilledButton.icon(
                         label: Text('Add Goal'),
@@ -29,7 +34,7 @@ class GoalsList extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Row(
+                  if (showActions) Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [Text('Your Goals'), Text('View All')],
