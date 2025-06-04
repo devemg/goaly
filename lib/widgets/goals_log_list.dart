@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-class GoalsList extends StatelessWidget {
-  final bool showActions;
+class GoalsLogList extends StatelessWidget {
 
-  const GoalsList({super.key, required this.showActions });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-        itemCount: 10,
+        itemCount: 11,
         padding: EdgeInsets.symmetric(horizontal: 10),
         itemBuilder: (context, index) {
           return Card(
@@ -46,21 +44,5 @@ class GoalsList extends StatelessWidget {
         },
       ),
     );
-    // return ListView.builder(
-    //   itemCount: items.length,
-    //   prototypeItem: ListTile(title: Text(items.first)),
-    //   itemBuilder: (context, index) {
-    //     return ListTile(title: Text(items[index]));
-    //   },
-    // children: [
-    //   Padding(
-    //     padding: const EdgeInsets.symmetric(horizontal: 10),
-    //     child: ,
-    //   ),
-
-    //   for (int i = 0; i < 5; i++)
-
-    // ],
-    // );
   }
 }
