@@ -39,16 +39,15 @@ class _RootPageState extends State<RootPage> {
           NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
-      body: <Widget>[
-        HomePage(),
-        ProgressPage(),
-        CalendarPage(),
-        ProfilePage(),
-      ][currentPageIndex],
-      // body: SafeArea(
-      //   top: true,
-      //   child: Column(children: [Header(), TodaysProgress()]),
-      // ),
+      body: SafeArea(
+        top: true,
+        child: <Widget>[
+          HomePage(),
+          ProgressPage(),
+          CalendarPage(),
+          ProfilePage(),
+        ][currentPageIndex],
+      ),
     );
   }
 }

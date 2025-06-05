@@ -2,8 +2,12 @@
 import 'package:flutter/material.dart';
 
 class TodaysProgress extends StatelessWidget {
+  final int total;
+  final int completed;
   const TodaysProgress({
     super.key,
+    required this.total,
+    required this.completed
   });
 
   @override
@@ -19,11 +23,11 @@ class TodaysProgress extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Today's Progress"),
-                Text('68%')
+                Text('${(total > 0 ? completed * 100 / total : 0).truncate()}%')
               ],
             ),
             LinearProgressIndicator(
-              value: 0.5,
+              value: (total > 0 ? completed / total : 0),
               minHeight: 10,
               borderRadius: BorderRadiusGeometry.all(Radius.circular(100)),
               semanticsLabel: 'Linear progress indicator',
@@ -32,8 +36,8 @@ class TodaysProgress extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("5 of 7 goals completed"),
-                Text('2 remaining')
+                Text("$completed of $total goals completed"),
+                Text('${total - completed} remaining')
               ],
             )
           ],

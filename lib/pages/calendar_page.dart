@@ -10,32 +10,25 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-  final List events = [{
-    'id': '1234',
-    'goalId': '123456',
-    'date': DateTime.now(),
-    'note': 'Notes 1',
-    'status': 'completed',
-    'timeLogged': 14654,
-  },
-  {
-    'id': '12345',
-    'goalId': '123456',
-    'date': DateTime.now(),
-    'note': 'Notes 2',
-    'status': 'in progress',
-    'timeLogged': 14654,
-  }];
-
-  _getEventsForDay(day) {
-    return events.where((event) {
-    final eventDate = event['date'] as DateTime;
-    return eventDate.year == day.year &&
-           eventDate.month == day.month &&
-           eventDate.day == day.day;
-  }).toList();
-  }
+  CalendarFormat _calendarFormat = CalendarFormat.week;
+  final List events = [
+    {
+      'id': '1234',
+      'goalId': '123456',
+      'date': DateTime.now(),
+      'note': 'Notes 1',
+      'status': 'completed',
+      'timeLogged': 14654,
+    },
+    {
+      'id': '12345',
+      'goalId': '123456',
+      'date': DateTime.now(),
+      'note': 'Notes 2',
+      'status': 'in progress',
+      'timeLogged': 14654,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +58,12 @@ class _CalendarPageState extends State<CalendarPage> {
             });
           },
           eventLoader: (day) {
-            return _getEventsForDay(day);
+            return events.where((event) {
+              final eventDate = event['date'] as DateTime;
+              return eventDate.year == day.year &&
+                  eventDate.month == day.month &&
+                  eventDate.day == day.day;
+            }).toList();
           },
         ),
         Padding(
@@ -96,7 +94,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ],
           ),
         ),
-        GoalsList(showActions: false),
+        GoalsList(goals: [], onChanged: (value) {}, ),
       ],
     );
   }
