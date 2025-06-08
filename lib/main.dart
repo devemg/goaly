@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:goaly/models/goal_model.dart';
 import 'package:goaly/root_page.dart';
 import 'package:provider/provider.dart';
 
@@ -24,5 +27,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppState extends ChangeNotifier {}
+class MyAppState extends ChangeNotifier {
+  final List<Goal> _goals = [];
+  UnmodifiableListView<Goal> get goals => UnmodifiableListView(_goals);
+  int get completedGoals => _goals.where((g) => g.status == 'completed').length;
+
+  void add(Goal item) {
+    _goals.add(item);
+    notifyListeners();
+  }
+
+}
 

@@ -94,7 +94,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ],
           ),
         ),
-        GoalsList(goals: [], onChanged: (value) {}, ),
+        GoalsList(),
       ],
     );
   }

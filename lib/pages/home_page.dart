@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goaly/db/database.dart';
-import 'package:goaly/models/goal_model.dart';
-import 'package:goaly/utils/id_generator.dart';
+import 'package:goaly/pages/new_goal_page.dart';
 import 'package:goaly/widgets/goals_list.dart';
 import 'package:goaly/widgets/header.dart';
 import 'package:goaly/widgets/todays_progress.dart';
@@ -12,45 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Goal> goals = [];
-  int completedGoals = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _setGoals();
-  }
-
-  void _setGoals() {
-    var allGoals = DatabaseService.getGoals();
-    setState(() {
-      goals = allGoals;
-      completedGoals = allGoals.where((g) => g.status == 'completed').length;
-    });
-  }
-
-  void _addGoal() {
-    DatabaseService.insertGoal(
-      Goal(
-        id: generateUuid(),
-        title: 'Goal 1',
-        description: 'Desc',
-        startDate: DateTime.now(),
-        status: 'active',
-      ),
-    );
-    _setGoals();
-  }
-
-  void _completeGoal(String id) {
-    var goal = DatabaseService.getGoalById(id);
-    if (goal != null) {
-      final updatedGoal = goal.copyWith(status: 'completed');
-      DatabaseService.updateGoal(updatedGoal);
-      _setGoals();
-    }
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -58,7 +18,7 @@ class _HomePageState extends State<HomePage> {
         Header(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: TodaysProgress(total: goals.length, completed: completedGoals),
+          child: TodaysProgress(),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -70,7 +30,9 @@ class _HomePageState extends State<HomePage> {
                   FilledButton.icon(
                     label: Text('Add Goal'),
                     icon: Icon(Icons.add),
-                    onPressed: _addGoal,
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => NewGoalPage()));
+                    },
                   ),
                   SizedBox(width: 10),
                   FilledButton.tonalIcon(
@@ -88,12 +50,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        GoalsList(
-          goals: goals,
-          onChanged: (value) {
-            _completeGoal(value);
-          },
-        ),
+        GoalsList(),
       ],
     );
   }

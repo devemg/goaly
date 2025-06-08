@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:goaly/models/goal_model.dart';
+import 'package:goaly/main.dart';
+import 'package:provider/provider.dart';
 
 class GoalsList extends StatelessWidget {
-  final List<Goal> goals;
-  final ValueChanged<String> onChanged;
 
-  const GoalsList({super.key, required this.goals, required this.onChanged});
+  const GoalsList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+
+    return Consumer<MyAppState>(builder: (context, state, child) {
+      return Expanded(
       child: ListView.builder(
-        itemCount: goals.length,
+        itemCount: state.goals.length,
         padding: EdgeInsets.symmetric(horizontal: 10),
         itemBuilder: (context, index) {
-          final currentGoal = goals[index];
+          final currentGoal = state.goals[index];
           return GestureDetector(
             onTap: (){
-              onChanged(currentGoal.id);
             },
             child: Card(
               child: Padding(
@@ -49,5 +49,6 @@ class GoalsList extends StatelessWidget {
         },
       ),
     );
+    });
   }
 }
