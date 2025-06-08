@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/main.dart';
 import 'package:goaly/models/day_checkbox.dart';
-import 'package:goaly/models/goal_model.dart';
-import 'package:goaly/utils/id_generator.dart';
 import 'package:goaly/widgets/checkbox_list_days.dart';
 import 'package:provider/provider.dart';
 
@@ -100,18 +98,14 @@ class _NewGoalPageState extends State<NewGoalPage> {
                       var selectedDays = days.where((d) => d.isChecked);
                       if (_formKey.currentState!.validate() &&
                           selectedDays.isNotEmpty) {
-                        var newGoal = Goal(
-                          id: generateUuid(),
+                        var cart = context.read<MyAppState>();
+                        cart.add(
                           title: newTitle.text,
                           description: newDescription.text,
-                          status: 'active',
                           weekDays: selectedDays
                               .map((day) => day.index)
                               .toList(),
                         );
-                        print(newGoal);
-                        var cart = context.read<MyAppState>();
-                        cart.add(newGoal);
                         Navigator.pop(context);
                         // you'd often call a server or save the information in a database.
                         ScaffoldMessenger.of(context).showSnackBar(

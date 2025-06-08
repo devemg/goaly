@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/widgets/goals_list.dart';
+import 'package:goaly/widgets/goals_log_list.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -32,6 +34,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    var isToday =
+        _focusedDay.year == DateTime.now().year &&
+        _focusedDay.month == DateTime.now().month &&
+        _focusedDay.day == DateTime.now().day;
     return Column(
       children: [
         TableCalendar(
@@ -89,12 +95,15 @@ class _CalendarPageState extends State<CalendarPage> {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text("Today's Goals"), Text('Dec 13')],
+                children: [
+                  Text("${isToday ? "Today's" : ''} Goals"),
+                  Text(DateFormat('MMMM d').format(_focusedDay)),
+                ],
               ),
             ],
           ),
         ),
-        GoalsList(),
+        if (isToday) GoalsList() else GoalsLogList(),
       ],
     );
   }

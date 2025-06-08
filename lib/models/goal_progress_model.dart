@@ -1,4 +1,4 @@
-class ProgressLog {
+class GoalProgressLog {
   final String id;
   final String goalId;
   final DateTime date;
@@ -6,7 +6,7 @@ class ProgressLog {
   final String status; // skipped | in_progress | completed
   final String timeLogged;
 
-  ProgressLog({
+  GoalProgressLog({
     required this.id,
     required this.goalId,
     required this.date,
@@ -15,7 +15,7 @@ class ProgressLog {
     required this.timeLogged,
   });
 
-  factory ProgressLog.fromJson(Map<String, dynamic> json) => ProgressLog(
+  factory GoalProgressLog.fromJson(Map<String, dynamic> json) => GoalProgressLog(
     id: json['id'],
     goalId: json['goalId'],
     date: DateTime.parse(json['date']),

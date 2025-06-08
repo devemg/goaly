@@ -4,7 +4,7 @@ class Goal {
   final String title;
   final String description;
   final List<int>? weekDays; // 1 (lunes) a 7 (domingo)
-  final String status;
+  final String status; // active | inactive
   final DateTime createdAt = DateTime.now();
 
   Goal({
