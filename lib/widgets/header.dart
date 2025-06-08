@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:goaly/main.dart';
+import 'package:provider/provider.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});
@@ -7,7 +9,8 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: Row(
+      child: Consumer<MyAppState>(builder: (context, state, child) {
+        return Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 10,
@@ -18,19 +21,20 @@ class Header extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(shape: BoxShape.circle),
             child: Image.network(
-              'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTYyMDF8MHwxfHNlYXJjaHw0fHx1c2VyfGVufDB8fHx8MTc0ODk5OTI3N3ww&ixlib=rb-4.1.0&q=80&w=1080',
+              state.user.avatar,
               fit: BoxFit.cover,
             ),
           ),
           Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text('Hey Emely!', textAlign: TextAlign.start),
-              Text('Lets achieve your goals today'),
+              Text('Hey ${state.user.name}!', textAlign: TextAlign.start),
+              Text('Lets achieve your goals today.'),
             ],
           ),
         ],
-      ),
+      );
+      }),
     );
   }
 }
