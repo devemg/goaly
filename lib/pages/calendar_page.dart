@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/main.dart';
-import 'package:goaly/pages/new_goal_page.dart';
+import 'package:goaly/pages/goal_form_page.dart';
 import 'package:goaly/styles/sizes.dart';
 import 'package:goaly/widgets/goals_list.dart';
 import 'package:goaly/widgets/goals_log_list.dart';
@@ -56,7 +56,7 @@ class _CalendarPageState extends State<CalendarPage> {
             },
             eventLoader: (day) {
               return state.goals.where((event) {
-                return event.weekDays?.contains(day.weekday) ?? false;
+                return event.weekDays.contains(day.weekday);
               }).toList();
             },
           );
@@ -72,7 +72,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         label: Text('Add Goal'),
                         icon: Icon(Icons.add),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => NewGoalPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => GoalFormPage()));
                         },
                       ),
                       SizedBox(width: 10),

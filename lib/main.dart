@@ -76,4 +76,42 @@ class MyAppState extends ChangeNotifier {
     _goals.add(newGoal);
     notifyListeners();
   }
+
+  Future<void> deleteGoal(String goalId) async {
+    try {
+      // delete from db
+      await DatabaseService.deleteGoal(goalId);
+      //delete from local state
+      _goals.removeWhere((goal) => goal.id == goalId);
+      notifyListeners();
+    } catch (e) {
+      print('Error deleting goal: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updateGoal({
+    required String goalId,
+    required String title,
+    required String description,
+    required List<int> weekDays,
+  }) async {
+    try {
+      // update in db
+      await DatabaseService.updateGoal(goalId, title, description, weekDays);
+      // update in local state
+      final index = _goals.indexWhere((g) => g.id == goalId);
+      if (index != -1) {
+        _goals[index] = _goals[index].copyWith(
+          title: title,
+          description: description,
+          weekDays: weekDays,
+        );
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error updating goal: $e');
+      rethrow;
+    }
+  }
 }

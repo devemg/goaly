@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/main.dart';
+import 'package:goaly/pages/goal_details_page.dart';
 import 'package:provider/provider.dart';
 
 class GoalsList extends StatelessWidget {
@@ -18,6 +19,7 @@ class GoalsList extends StatelessWidget {
           final currentGoal = state.goals[index];
           return GestureDetector(
             onTap: (){
+               Navigator.push(context, MaterialPageRoute(builder: (context) => GoalDetailsPage(goalDetail: currentGoal)));
             },
             child: Card(
               child: Padding(

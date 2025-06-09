@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/main.dart';
+import 'package:goaly/models/goal_model.dart';
+import 'package:goaly/pages/goal_details_page.dart';
 import 'package:goaly/styles/sizes.dart';
 import 'package:goaly/widgets/checkbox_list_days.dart';
 import 'package:provider/provider.dart';
 
-class NewGoalPage extends StatefulWidget {
+class GoalFormPage extends StatefulWidget {
+  final Goal? goal;
+  const GoalFormPage({super.key, this.goal});
+
   @override
-  State<NewGoalPage> createState() => _NewGoalPageState();
+  State<GoalFormPage> createState() => _GoalFormPageState();
 }
 
-class _NewGoalPageState extends State<NewGoalPage> {
-  List<int> selectedDays = [];
-
+class _GoalFormPageState extends State<GoalFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final newTitle = TextEditingController();
-  final newDescription = TextEditingController();
+  late TextEditingController newTitle;
+  late TextEditingController newDescription;
+  late List<int> selectedDays;
+
+  @override
+  void initState() {
+    super.initState();
+    newTitle = TextEditingController(text: widget.goal?.title ?? '');
+    newDescription = TextEditingController(
+      text: widget.goal?.description ?? '',
+    );
+    selectedDays = widget.goal?.weekDays.toList() ?? [];
+  }
 
   @override
   void dispose() {
@@ -26,8 +40,14 @@ class _NewGoalPageState extends State<NewGoalPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isUpdate = widget.goal != null;
     return Scaffold(
-      appBar: AppBar(title: Text('New Goal', style: sectionTitleSty) ),
+      appBar: AppBar(
+        title: Text(
+          isUpdate ? 'Update Goal' : 'New Goal',
+          style: sectionTitleSty,
+        ),
+      ),
       body: ListView(
         padding: EdgeInsetsGeometry.symmetric(vertical: 20, horizontal: 25),
         children: [
@@ -97,24 +117,58 @@ class _NewGoalPageState extends State<NewGoalPage> {
                 ),
                 SizedBox(height: 25),
                 FilledButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate() &&
                         selectedDays.isNotEmpty) {
                       var state = context.read<MyAppState>();
-                      state.add(
-                        title: newTitle.text,
-                        description: newDescription.text,
-                        weekDays: selectedDays.map((day) => day).toList(),
-                      );
-                      Navigator.pop(context);
+                      final newWeekdays = selectedDays
+                          .map((day) => day)
+                          .toList();
+                      if (isUpdate) {
+                        await state.updateGoal(
+                          goalId: widget.goal!.id,
+                          title: newTitle.text,
+                          description: newDescription.text,
+                          weekDays: newWeekdays,
+                        );
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(
+                            // Replace current details page
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GoalDetailsPage(
+                                goalDetail: widget.goal!.copyWith(
+                                  title: newTitle.text,
+                                  description: newDescription.text,
+                                  weekDays: newWeekdays,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      } else {
+                        state.add(
+                          title: newTitle.text,
+                          description: newDescription.text,
+                          weekDays: newWeekdays,
+                        );
+                        Navigator.pop(context);
+                      }
                       // you'd often call a server or save the information in a database.
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Goal Created!')),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isUpdate ? 'Goal Updated!' : 'Goal Created!',
+                            ),
+                          ),
+                        );
+                      }
                       //
                     }
                   },
-                  child: const Text('Save'),
+                  child: Text(isUpdate ? 'Update' : 'Save'),
                 ),
               ],
             ),
