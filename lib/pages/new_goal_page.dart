@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/main.dart';
-import 'package:goaly/models/day_checkbox.dart';
+import 'package:goaly/styles/sizes.dart';
 import 'package:goaly/widgets/checkbox_list_days.dart';
 import 'package:provider/provider.dart';
 
@@ -10,15 +10,7 @@ class NewGoalPage extends StatefulWidget {
 }
 
 class _NewGoalPageState extends State<NewGoalPage> {
-  final List<DayCheckbox> days = [
-    DayCheckbox(name: 'Monday', isChecked: false, index: 0),
-    DayCheckbox(name: 'Tuesday', isChecked: false, index: 1),
-    DayCheckbox(name: 'Wednesday', isChecked: false, index: 2),
-    DayCheckbox(name: 'Thursday', isChecked: false, index: 3),
-    DayCheckbox(name: 'Friday', isChecked: false, index: 4),
-    DayCheckbox(name: 'Saturday', isChecked: false, index: 5),
-    DayCheckbox(name: 'Sunday', isChecked: false, index: 6),
-  ];
+  List<int> selectedDays = [];
 
   final _formKey = GlobalKey<FormState>();
   final newTitle = TextEditingController();
@@ -35,89 +27,96 @@ class _NewGoalPageState extends State<NewGoalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('New Goal', style: sectionTitleSty) ),
       body: ListView(
+        padding: EdgeInsetsGeometry.symmetric(vertical: 20, horizontal: 25),
         children: [
-          Text('New Goal'),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                spacing: 10,
-                children: [
-                  TextFormField(
-                    controller: newTitle,
-                    decoration: InputDecoration(labelText: 'Goal Title'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'The title is required.';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: newDescription,
-                    decoration: InputDecoration(labelText: 'Goal Description'),
-                    minLines: 3,
-                    maxLines: 3,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'The description is required.';
-                      }
-                      return null;
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      const Text('Select the week days for the goal'),
-                      GestureDetector(
-                        child: const Text('Select All'),
-                        onTap: () {
-                          setState(() {
-                            for (var day in days) {
-                              day.isChecked =
-                                  true; // Esto solo funciona si DayCheckbox es mutable (tiene un setter para isChecked)
-                            }
-                          });
-                        },
+          Form(
+            key: _formKey,
+            child: Column(
+              spacing: 10,
+              children: [
+                TextFormField(
+                  controller: newTitle,
+                  decoration: InputDecoration(labelText: 'Goal Title'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'The title is required.';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: newDescription,
+                  decoration: InputDecoration(labelText: 'Goal Description'),
+                  minLines: 3,
+                  maxLines: 3,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'The description is required.';
+                    }
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const Text('Select the week days for the goal'),
+                    GestureDetector(
+                      child: Text(
+                        style: linkSty,
+                        selectedDays.length == 7
+                            ? 'Unselect All'
+                            : 'Select All',
                       ),
-                    ],
-                  ),
-                  DaysCheckboxList(
-                    days: days,
-                    onChanged: (value) {
-                      setState(() {
-                        days[value.index] = value;
-                      });
-                    },
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      var selectedDays = days.where((d) => d.isChecked);
-                      if (_formKey.currentState!.validate() &&
-                          selectedDays.isNotEmpty) {
-                        var cart = context.read<MyAppState>();
-                        cart.add(
-                          title: newTitle.text,
-                          description: newDescription.text,
-                          weekDays: selectedDays
-                              .map((day) => day.index)
-                              .toList(),
-                        );
-                        Navigator.pop(context);
-                        // you'd often call a server or save the information in a database.
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Goal Created!')),
-                        );
-                        //
+                      onTap: () {
+                        // select/unselect days
+                        setState(() {
+                          if (selectedDays.length == 7) {
+                            selectedDays = [];
+                          } else {
+                            selectedDays = [1, 2, 3, 4, 5, 6, 7];
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                DaysCheckboxList(
+                  selectedDays: selectedDays,
+                  onChanged: (key, value) {
+                    setState(() {
+                      if (value) {
+                        selectedDays.add(key);
+                      } else {
+                        selectedDays.remove(key);
                       }
-                    },
-                    child: const Text('Save'),
-                  ),
-                ],
-              ),
+                    });
+                  },
+                ),
+                SizedBox(height: 25),
+                FilledButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate() &&
+                        selectedDays.isNotEmpty) {
+                      var state = context.read<MyAppState>();
+                      state.add(
+                        title: newTitle.text,
+                        description: newDescription.text,
+                        weekDays: selectedDays.map((day) => day).toList(),
+                      );
+                      Navigator.pop(context);
+                      // you'd often call a server or save the information in a database.
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Goal Created!')),
+                      );
+                      //
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
             ),
           ),
         ],

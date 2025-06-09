@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/pages/new_goal_page.dart';
+import 'package:goaly/styles/sizes.dart';
 import 'package:goaly/widgets/goals_list.dart';
 import 'package:goaly/widgets/header.dart';
 import 'package:goaly/widgets/todays_progress.dart';
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text('Your Goals for Today'), Text('View All')],
+                children: [Text('Your Goals for Today', style: sectionSubtitleSty), Text('View All', style: linkSty)],
               ),
             ],
           ),

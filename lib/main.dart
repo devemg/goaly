@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         title: 'Goaly',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.purpleAccent),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         ),
         home: RootPage(),
       ),

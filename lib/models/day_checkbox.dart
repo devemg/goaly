@@ -1,19 +1,16 @@
 class DayCheckbox {
   String name;
-  bool isChecked;
-  int index;
+  int key;
 
-  DayCheckbox({required this.name, required this.isChecked, required this.index});
+  DayCheckbox({required this.name, required this.key});
   
    DayCheckbox copyWith({
     String? name,
-    bool? isChecked,
-    int? index,
+    int? key,
   }) {
     return DayCheckbox(
-      isChecked: isChecked ?? this.isChecked,
       name: name ?? this.name,
-      index: index ?? this.index,
+      key: key ?? this.key,
     );
   }
 }
