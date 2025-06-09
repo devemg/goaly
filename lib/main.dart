@@ -5,7 +5,7 @@ import 'package:goaly/db/database.dart';
 import 'package:goaly/models/goal_model.dart';
 import 'package:goaly/models/goal_progress_model.dart';
 import 'package:goaly/models/user_model.dart';
-import 'package:goaly/root_page.dart';
+import 'package:goaly/pages/public/main_public_page.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -23,11 +23,37 @@ class MyApp extends StatelessWidget {
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'Goaly',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        ),
-        home: RootPage(),
+        theme:
+            ThemeData(
+              useMaterial3: true,
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
+            ).copyWith(
+              filledButtonTheme: FilledButtonThemeData(
+                style: ButtonStyle(
+                  padding: WidgetStateProperty.all(
+                    EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                ),
+              ),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ButtonStyle(
+                  padding: WidgetStateProperty.all(
+                    EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        home: MainPublicPage(),
       ),
     );
   }
