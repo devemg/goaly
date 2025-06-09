@@ -38,6 +38,71 @@ class _GoalFormPageState extends State<GoalFormPage> {
     super.dispose();
   }
 
+    Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate() || selectedDays.isEmpty) return;
+
+    final state = context.read<MyAppState>();
+    final newWeekdays = selectedDays.toList();
+    
+    try {
+      if (widget.goal != null) {
+        // Update
+        await state.updateGoal(
+          goalId: widget.goal!.id,
+          title: newTitle.text,
+          description: newDescription.text,
+          weekDays: newWeekdays,
+        );
+        
+        // Navegación optimizada
+        _navigateBackWithUpdatedGoal(newWeekdays);
+      } else {
+        // Add
+        await state.add(
+          title: newTitle.text,
+          description: newDescription.text,
+          weekDays: newWeekdays,
+        );
+        Navigator.of(context).pop();
+      }
+      
+      _showSuccessMessage();
+    } catch (e) {
+      _showErrorMessage(e.toString());
+    }
+  }
+
+  void _navigateBackWithUpdatedGoal(List<int> weekDays) {
+    Navigator.of(context)
+      ..pop()
+      ..pop()
+      ..push(
+        MaterialPageRoute(
+          builder: (context) => GoalDetailsPage(
+            goalDetail: widget.goal!.copyWith(
+              title: newTitle.text,
+              description: newDescription.text,
+              weekDays: weekDays,
+            ),
+          ),
+        ),
+      );
+  }
+
+  void _showSuccessMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(widget.goal != null ? 'Goal Updated!' : 'Goal Created!'),
+      ),
+    );
+  }
+
+  void _showErrorMessage(String error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: $error')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isUpdate = widget.goal != null;
@@ -117,57 +182,7 @@ class _GoalFormPageState extends State<GoalFormPage> {
                 ),
                 SizedBox(height: 25),
                 FilledButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate() &&
-                        selectedDays.isNotEmpty) {
-                      var state = context.read<MyAppState>();
-                      final newWeekdays = selectedDays
-                          .map((day) => day)
-                          .toList();
-                      if (isUpdate) {
-                        await state.updateGoal(
-                          goalId: widget.goal!.id,
-                          title: newTitle.text,
-                          description: newDescription.text,
-                          weekDays: newWeekdays,
-                        );
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          Navigator.pushReplacement(
-                            // Replace current details page
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => GoalDetailsPage(
-                                goalDetail: widget.goal!.copyWith(
-                                  title: newTitle.text,
-                                  description: newDescription.text,
-                                  weekDays: newWeekdays,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      } else {
-                        state.add(
-                          title: newTitle.text,
-                          description: newDescription.text,
-                          weekDays: newWeekdays,
-                        );
-                        Navigator.pop(context);
-                      }
-                      // you'd often call a server or save the information in a database.
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              isUpdate ? 'Goal Updated!' : 'Goal Created!',
-                            ),
-                          ),
-                        );
-                      }
-                      //
-                    }
-                  },
+                  onPressed: _submitForm,
                   child: Text(isUpdate ? 'Update' : 'Save'),
                 ),
               ],

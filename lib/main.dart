@@ -61,7 +61,7 @@ class MyAppState extends ChangeNotifier {
     }
   }
 
-  void add({
+  Future<void> add({
     required String title,
     required String description,
     required List<int> weekDays,
