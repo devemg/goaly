@@ -1,50 +1,63 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:goaly/models/goal_model.dart';
 
 class DatabaseService {
-  static List<Goal>? _database;
+  static FirebaseFirestore? _database;
 
-  static List<Goal> get database {
-    _database ??= [];
+  static FirebaseFirestore get database {
+    _database ??= FirebaseFirestore.instance;
     return _database!;
   }
 
-  // CRUD GOALS
+  static Future<Goal> insertGoal(
+    String title,
+    String description,
+    List<int> weekDays,
+  ) async {
+    final newGoal = <String, dynamic>{
+      "title": title,
+      "description": description,
+      "weekdays": weekDays,
+      "status": "active",
+      "createdAt": FieldValue.serverTimestamp(),
+    };
 
-  static String insertGoal(Goal goal) {
-    database.add(goal);
-    return goal.id;
+    final docRef = await database.collection("goals").add(newGoal);
+    final docSnapshot = await docRef.get();
+
+    return Goal.fromFirestore(docSnapshot);
   }
 
-  static List<Goal> getGoals() {
-    return database;
+  static Future<List<Goal>> getAllGoals() async {
+    // Fetch goal logs from Firebase
+    final goalsSnapshot = await FirebaseFirestore.instance
+        .collection('goals')
+        .get();
+    return goalsSnapshot.docs.map((doc) => Goal.fromFirestore(doc)).toList();
   }
 
-  static List<Goal> getAllGoals() {
-    return List.unmodifiable(database);
-  }
+  // static Goal? getGoalById(String id) {
+  //   try {
+  //     return database.firstWhere((g) => g.id == id);
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
-  static Goal? getGoalById(String id) {
-    try {
-      return database.firstWhere((g) => g.id == id);
-    } catch (e) {
-      return null;
-    }
-  }
+  // static void updateGoal(Goal updatedGoal) {
+  //   final index = database.indexWhere((g) => g.id == updatedGoal.id);
+  //   if (index != -1) {
+  //     database[index] = updatedGoal;
+  //   }
+  // }
 
-  static void updateGoal(Goal updatedGoal) {
-    final index = database.indexWhere((g) => g.id == updatedGoal.id);
-    if (index != -1) {
-      database[index] = updatedGoal;
-    }
-  }
+  // /// Delete
+  // static void deleteGoal(String id) {
+  //   database.removeWhere((g) => g.id == id);
+  // }
 
-  /// Delete
-  static void deleteGoal(String id) {
-    database.removeWhere((g) => g.id == id);
-  }
-
-  /// Optional: Clear all (for testing or reset)
-  static void clearAll() {
-    database.clear();
-  }
+  // /// Optional: Clear all (for testing or reset)
+  // static void clearAll() {
+  //   database.clear();
+  // }
 }
