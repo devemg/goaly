@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goaly/main.dart';
+import 'package:goaly/app_state.dart';
 import 'package:goaly/models/goal_model.dart';
 import 'package:goaly/pages/goal_details_page.dart';
 import 'package:goaly/styles/sizes.dart';
@@ -58,7 +58,7 @@ class _GoalFormPageState extends State<GoalFormPage> {
         _navigateBackWithUpdatedGoal(newWeekdays);
       } else {
         // Add
-        await state.add(
+        await state.addGoal(
           title: newTitle.text,
           description: newDescription.text,
           weekDays: newWeekdays,

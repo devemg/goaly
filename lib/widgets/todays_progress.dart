@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goaly/main.dart';
+import 'package:goaly/app_state.dart';
 import 'package:provider/provider.dart';
 
 class TodaysProgress extends StatelessWidget {

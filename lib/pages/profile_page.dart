@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:goaly/main.dart';
+import 'package:goaly/app_state.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -11,19 +12,19 @@ class ProfilePage extends StatelessWidget {
         return Column(
         spacing: 20,
         children: [
-          Center(
-            child: Container(
-              width: 69.2,
-              height: 69.2,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(shape: BoxShape.circle),
-              child: Image.network(
-                state.user.avatar,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Text(state.user.email),
+          // Center(
+          //   child: Container(
+          //     width: 69.2,
+          //     height: 69.2,
+          //     clipBehavior: Clip.antiAlias,
+          //     decoration: BoxDecoration(shape: BoxShape.circle),
+          //     child: Image.network(
+          //       state.user.avatar,
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
+          // ),
+          // Text(state.user.email),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
@@ -85,10 +86,15 @@ class ProfilePage extends StatelessWidget {
                   trailing: Icon(Icons.arrow_forward_ios_sharp),
                   leading: Icon(Icons.star),
                 ),
-                Text(''),
-                ListTile(
-                  title: Text('Sign Out'),
-                  leading: Icon(Icons.logout),
+
+                GestureDetector(
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                  },
+                  child: ListTile(
+                    title: Text('Sign Out'),
+                    leading: Icon(Icons.logout),
+                  ),
                 ),
               ],
             ),

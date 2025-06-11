@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goaly/pages/public/sign_in_page.dart';
 import 'package:goaly/pages/public/sign_up_page.dart';
 
-class MainPublicPage extends StatelessWidget {
+class RootPublicPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
@@ -10,7 +10,7 @@ class MainPublicPage extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.primary,      
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-        child: Expanded(child: Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.max,
@@ -45,7 +45,6 @@ class MainPublicPage extends StatelessWidget {
             )
           ],
         )),
-      ),
     );
   }
 }

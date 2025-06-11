@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goaly/main.dart';
+import 'package:goaly/app_state.dart';
 import 'package:provider/provider.dart';
 
 class Header extends StatelessWidget {
@@ -15,23 +15,23 @@ class Header extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 10,
         children: [
-          Container(
-            width: 69.2,
-            height: 69.2,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(shape: BoxShape.circle),
-            child: Image.network(
-              state.user.avatar,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text('Hey ${state.user.name}!', textAlign: TextAlign.start),
-              Text('Lets achieve your goals today.'),
-            ],
-          ),
+          // Container(
+          //   width: 69.2,
+          //   height: 69.2,
+          //   clipBehavior: Clip.antiAlias,
+          //   decoration: BoxDecoration(shape: BoxShape.circle),
+          //   child: Image.network(
+          //     state.user.avatar,
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          // Column(
+          //   mainAxisSize: MainAxisSize.max,
+          //   children: [
+          //     Text('Hey ${state.user.name}!', textAlign: TextAlign.start),
+          //     Text('Lets achieve your goals today.'),
+          //   ],
+          // ),
         ],
       );
       }),
