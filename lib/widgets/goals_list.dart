@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/app_state.dart';
-import 'package:goaly/pages/goal_details_page.dart';
+import 'package:goaly/pages/goals/goal_details_page.dart';
 import 'package:provider/provider.dart';
 
 class GoalsList extends StatelessWidget {

@@ -29,5 +29,17 @@ ThemeData getAppTheme() {
         ),
       ),
     ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(
+        padding: WidgetStateProperty.all(
+          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+        ),
+      ),
+    )
   );
 }

@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+
 class Reminder {
   final int? id;
-  final int goalId;
-  final String time; // Hora en formato 'HH:mm'
+  final String goalId;
+  final TimeOfDay time;
 
   Reminder({this.id, required this.goalId, required this.time});
 

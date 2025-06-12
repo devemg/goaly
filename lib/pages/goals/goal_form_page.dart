@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/app_state.dart';
 import 'package:goaly/models/goal_model.dart';
-import 'package:goaly/pages/goal_details_page.dart';
+import 'package:goaly/pages/goals/goal_details_page.dart';
 import 'package:goaly/styles/sizes.dart';
 import 'package:goaly/widgets/checkbox_list_days.dart';
 import 'package:provider/provider.dart';

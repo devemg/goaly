@@ -1,14 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/app_state.dart';
 import 'package:goaly/models/goal_model.dart';
-import 'package:goaly/pages/goal_form_page.dart';
+import 'package:goaly/models/reminder_model.dart';
+import 'package:goaly/pages/goals/goal_form_page.dart';
 import 'package:goaly/styles/sizes.dart';
+import 'package:goaly/widgets/reminders_list.dart';
 import 'package:provider/provider.dart';
 
-class GoalDetailsPage extends StatelessWidget {
+class GoalDetailsPage extends StatefulWidget {
   final Goal goalDetail;
 
   const GoalDetailsPage({super.key, required this.goalDetail});
+
+  @override
+  State<GoalDetailsPage> createState() => _GoalDetailsPageState();
+}
+
+class _GoalDetailsPageState extends State<GoalDetailsPage> {
+  late List<Reminder> reminders;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      reminders = [];
+    });
+  }
+
+  void _addReminder(BuildContext context, String goalId) async {
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.dial,
+    );
+    if (time != null) {
+      var newReminder = Reminder(goalId: goalId, time: time);
+      setState(() {
+        reminders.add(newReminder);
+      });
+    }
+  }
 
   void _deleteGoal(BuildContext context, String goalId) async {
     final confirmed = await showDialog<bool>(
@@ -38,7 +69,6 @@ class GoalDetailsPage extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Goal deleted successfully')),
           );
-
           Navigator.pop(context);
         }
       } catch (e) {
@@ -55,16 +85,22 @@ class GoalDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Goal Details', style: sectionTitleSty)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addReminder(context, widget.goalDetail.id);
+        },
+        child: const Icon(Icons.add),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(goalDetail.title),
-            Text(goalDetail.description),
-            Text(goalDetail.status),
-            Text('Days: ${goalDetail.weekDays.join(', ')}'),
+            Text(widget.goalDetail.title),
+            Text(widget.goalDetail.description),
+            Text(widget.goalDetail.status),
+            Text('Days: ${widget.goalDetail.weekDays.join(', ')}'),
             Row(
               spacing: 10,
               children: [
@@ -74,7 +110,8 @@ class GoalDetailsPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GoalFormPage(goal: goalDetail),
+                          builder: (context) =>
+                              GoalFormPage(goal: widget.goalDetail),
                         ),
                       );
                     },
@@ -85,13 +122,23 @@ class GoalDetailsPage extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      _deleteGoal(context, goalDetail.id);
+                      _deleteGoal(context, widget.goalDetail.id);
                     },
                     label: Text('Delete Goal'),
                     icon: Icon(Icons.delete_forever),
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [Text('Reminders', style: sectionSubtitleSty)],
+            ),
+            RemindersList(
+              reminders: reminders,
+              onDelete: (p0) async {},
+              onUpdate: (p0) async {},
             ),
           ],
         ),

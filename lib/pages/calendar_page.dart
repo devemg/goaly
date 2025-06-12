@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/app_state.dart';
-import 'package:goaly/pages/goal_form_page.dart';
+import 'package:goaly/pages/goals/goal_form_page.dart';
 import 'package:goaly/styles/sizes.dart';
 import 'package:goaly/widgets/goals_list.dart';
 import 'package:goaly/widgets/goals_log_list.dart';
