@@ -15,6 +15,9 @@ class _SignInPageState extends State<SignInPage> {
   bool hiddenPassword = true;
   late String errorMessage = '';
   void _submit() async {
+    setState(() {
+      errorMessage = '';
+    });
     if (!_formKey.currentState!.validate()) return;
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -122,11 +125,6 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 10,
-              children: [Text('Dont have an account?'), Text('Sign Up')],
             ),
             Row(
               spacing: 10,

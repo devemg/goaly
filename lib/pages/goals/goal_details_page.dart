@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/app_state.dart';
+import 'package:goaly/db/database.dart';
 import 'package:goaly/models/goal_model.dart';
 import 'package:goaly/models/reminder_model.dart';
 import 'package:goaly/pages/goals/goal_form_page.dart';
@@ -17,14 +18,23 @@ class GoalDetailsPage extends StatefulWidget {
 }
 
 class _GoalDetailsPageState extends State<GoalDetailsPage> {
-  late List<Reminder> reminders;
+  late List<Reminder> reminders = [];
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      reminders = [];
-    });
+    _loadReminders();
+  }
+
+  void _loadReminders() async {
+    try {
+      final list = await DatabaseService.getAllReminders(widget.goalDetail.id);
+      setState(() {
+        reminders = list;
+      });
+    } catch (e) {
+      print('Error adding the reminder: $e');
+    }
   }
 
   void _addReminder(BuildContext context, String goalId) async {
@@ -33,11 +43,50 @@ class _GoalDetailsPageState extends State<GoalDetailsPage> {
       initialTime: TimeOfDay.now(),
       initialEntryMode: TimePickerEntryMode.dial,
     );
-    if (time != null) {
-      var newReminder = Reminder(goalId: goalId, time: time);
-      setState(() {
-        reminders.add(newReminder);
-      });
+    if (time != null && context.mounted) {
+      try {
+        final newReminder = await DatabaseService.insertReminder(goalId, time);
+        setState(() {
+          reminders.add(newReminder);
+        });
+      } catch (e) {
+        print('Error adding the reminder: $e');
+      }
+    }
+  }
+
+  void _updateReminder(String id) async {
+    print('update!!!');
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.dial,
+    );
+    print(time);
+    // if (time != null && context.mounted) {
+    //   try {
+    //     await DatabaseService.updateReminder(id, time);
+    //     final updatedReminders = await DatabaseService.getAllReminders();
+    //     setState(() {
+    //       reminders = updatedReminders;
+    //     });
+    //   } catch (e) {
+    //     print('Error updating the reminder: $e');
+    //   }
+    // }
+  }
+
+  void _deleteReminder(String id) async {
+    if (context.mounted) {
+      try {
+        await DatabaseService.deleteReminder(id);
+        final updatedReminders = await DatabaseService.getAllReminders(widget.goalDetail.id);
+        setState(() {
+          reminders = updatedReminders;
+        });
+      } catch (e) {
+        print('Error removing the reminder: $e');
+      }
     }
   }
 
@@ -137,8 +186,12 @@ class _GoalDetailsPageState extends State<GoalDetailsPage> {
             ),
             RemindersList(
               reminders: reminders,
-              onDelete: (p0) async {},
-              onUpdate: (p0) async {},
+              onDelete: (reminder) async {
+                _deleteReminder(reminder.id!);
+              },
+              onUpdate: (reminder) async {
+                _updateReminder(reminder.id!);
+              },
             ),
           ],
         ),

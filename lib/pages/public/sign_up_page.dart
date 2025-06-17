@@ -17,6 +17,9 @@ class _SignUpPageState extends State<SignUpPage> {
   String errorMessage = '';
 
   void _submit() async {
+    setState(() {
+      errorMessage = '';
+    });
     if (!_formKey.currentState!.validate()) return;
     try {
       final credential = await FirebaseAuth.instance
