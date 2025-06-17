@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:goaly/utils/errors.dart';
 import 'package:goaly/utils/validators.dart';
 
 class SignInPage extends StatefulWidget {
@@ -19,19 +17,19 @@ class _SignInPageState extends State<SignInPage> {
       errorMessage = '';
     });
     if (!_formKey.currentState!.validate()) return;
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: newEmail.text,
-        password: newPassword.text,
-      );
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = authErrorMessage(e, false);
-      });
-    } catch (e) {
-      print(e);
-    }
+    // try {
+    //   await FirebaseAuth.instance.signInWithEmailAndPassword(
+    //     email: newEmail.text,
+    //     password: newPassword.text,
+    //   );
+    //   Navigator.pop(context);
+    // } on FirebaseAuthException catch (e) {
+    //   setState(() {
+    //     errorMessage = authErrorMessage(e, false);
+    //   });
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   @override

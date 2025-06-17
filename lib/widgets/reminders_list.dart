@@ -56,7 +56,7 @@ class RemindersList extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Close'),
+                    child: const Text('Cancel'),
                   ),
                 ],
               ),
@@ -72,7 +72,6 @@ class RemindersList extends StatelessWidget {
     return Expanded(
       child: ListView.builder(
         itemCount: reminders.length,
-        padding: EdgeInsets.symmetric(horizontal: 10),
         itemBuilder: (context, index) {
           final currentReminder = reminders[index];
           return GestureDetector(

@@ -1,12 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
 class Goal {
   final String id;
   final String title;
   final String description;
-  final List<int> weekDays; // 1 (lunes) a 7 (domingo)
-  final String status; // active | inactive
-  final DateTime createdAt = DateTime.now();
+  final List<int> weekDays;
+  final String status;
+  final DateTime createdAt;
 
   Goal({
     required this.id,
@@ -14,26 +14,13 @@ class Goal {
     required this.description,
     required this.weekDays,
     required this.status,
-  });
-
-  factory Goal.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map;
-    return Goal(
-      id: doc.id,
-      title: data['title'],
-      description: data['description'],
-      weekDays: List<int>.from(data['weekdays'].map((x) => x.toInt())),
-      status: data['status'] ?? 'active',
-    );
-  }
+    DateTime? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now();
 
   Goal copyWith({
     String? title,
     String? description,
-    DateTime? startDate,
-    DateTime? endDate,
     List<int>? weekDays,
-    List<int>? monthDays,
     String? status,
   }) {
     return Goal(
@@ -42,6 +29,29 @@ class Goal {
       description: description ?? this.description,
       weekDays: weekDays ?? this.weekDays,
       status: status ?? this.status,
+      createdAt: createdAt,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'weekDays': jsonEncode(weekDays),
+      'status': status,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
+  factory Goal.fromMap(Map<String, dynamic> map) {
+    return Goal(
+      id: map['id'],
+      title: map['title'],
+      description: map['description'],
+      weekDays: List<int>.from(jsonDecode(map['weekDays'])),
+      status: map['status'],
+      createdAt: DateTime.parse(map['createdAt']),
     );
   }
 }

@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:goaly/utils/errors.dart';
 import 'package:goaly/utils/validators.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -21,23 +19,23 @@ class _SignUpPageState extends State<SignUpPage> {
       errorMessage = '';
     });
     if (!_formKey.currentState!.validate()) return;
-    try {
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: newEmail.text,
-            password: newPassword.text,
-          );
-      if (credential.user != null) {
-        await credential.user!.updateDisplayName(newName.text);
-      }
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = authErrorMessage(e, true);
-      });
-    } catch (e) {
-      print(e);
-    }
+    // try {
+    //   final credential = await FirebaseAuth.instance
+    //       .createUserWithEmailAndPassword(
+    //         email: newEmail.text,
+    //         password: newPassword.text,
+    //       );
+    //   if (credential.user != null) {
+    //     await credential.user!.updateDisplayName(newName.text);
+    //   }
+    //   Navigator.pop(context);
+    // } on FirebaseAuthException catch (e) {
+    //   setState(() {
+    //     errorMessage = authErrorMessage(e, true);
+    //   });
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   @override

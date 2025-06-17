@@ -8,7 +8,7 @@ ThemeData getAppTheme() {
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         padding: WidgetStateProperty.all(
-          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
@@ -20,7 +20,7 @@ ThemeData getAppTheme() {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         padding: WidgetStateProperty.all(
-          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
@@ -32,7 +32,7 @@ ThemeData getAppTheme() {
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
         padding: WidgetStateProperty.all(
-          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(

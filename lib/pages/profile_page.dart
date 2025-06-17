@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:goaly/app_state.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +88,6 @@ class ProfilePage extends StatelessWidget {
 
                 GestureDetector(
                   onTap: () async {
-                    await FirebaseAuth.instance.signOut();
                   },
                   child: ListTile(
                     title: Text('Sign Out'),

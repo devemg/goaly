@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:goaly/pages/calendar_page.dart';
-import 'package:goaly/pages/home_page.dart';
 import 'package:goaly/pages/profile_page.dart';
 import 'package:goaly/pages/progress_page.dart';
 
@@ -42,7 +41,7 @@ class _RootPageState extends State<RootPage> {
       body: SafeArea(
         top: true,
         child: <Widget>[
-          HomePage(),
+          // HomePage(),
           ProgressPage(),
           CalendarPage(),
           ProfilePage(),

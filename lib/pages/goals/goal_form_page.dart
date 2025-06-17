@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:goaly/app_state.dart';
 import 'package:goaly/models/goal_model.dart';
 import 'package:goaly/pages/goals/goal_details_page.dart';
+import 'package:goaly/providers/goal_provider.dart';
 import 'package:goaly/styles/sizes.dart';
+import 'package:goaly/utils/id_generator.dart';
 import 'package:goaly/widgets/checkbox_list_days.dart';
 import 'package:provider/provider.dart';
 
@@ -38,53 +39,41 @@ class _GoalFormPageState extends State<GoalFormPage> {
     super.dispose();
   }
 
-    Future<void> _submitForm() async {
+  Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate() || selectedDays.isEmpty) return;
-
-    final state = context.read<MyAppState>();
-    final newWeekdays = selectedDays.toList();
-    
     try {
+      final goalElement = Goal(
+        id: widget.goal?.id ?? generateUuid(),
+        title: newTitle.text,
+        description: newDescription.text,
+        weekDays: selectedDays.toList(),
+        status: widget.goal?.status ?? 'active',
+      );
       if (widget.goal != null) {
         // Update
-        await state.updateGoal(
-          goalId: widget.goal!.id,
-          title: newTitle.text,
-          description: newDescription.text,
-          weekDays: newWeekdays,
-        );
-        
-        // Navegación optimizada
-        _navigateBackWithUpdatedGoal(newWeekdays);
+        Provider.of<GoalProvider>(
+          context,
+          listen: false,
+        ).updateGoal(goalElement);
+        _navigateBackWithUpdatedGoal(goalElement);
       } else {
         // Add
-        await state.addGoal(
-          title: newTitle.text,
-          description: newDescription.text,
-          weekDays: newWeekdays,
-        );
+        Provider.of<GoalProvider>(context, listen: false).addGoal(goalElement);
         Navigator.of(context).pop();
       }
-      
       _showSuccessMessage();
     } catch (e) {
       _showErrorMessage(e.toString());
     }
   }
 
-  void _navigateBackWithUpdatedGoal(List<int> weekDays) {
+  void _navigateBackWithUpdatedGoal(Goal updatedGoal) {
     Navigator.of(context)
       ..pop()
       ..pop()
       ..push(
         MaterialPageRoute(
-          builder: (context) => GoalDetailsPage(
-            goalDetail: widget.goal!.copyWith(
-              title: newTitle.text,
-              description: newDescription.text,
-              weekDays: weekDays,
-            ),
-          ),
+          builder: (context) => GoalDetailsPage(currentGoal: updatedGoal),
         ),
       );
   }
@@ -98,9 +87,9 @@ class _GoalFormPageState extends State<GoalFormPage> {
   }
 
   void _showErrorMessage(String error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $error')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Error: $error')));
   }
 
   @override

@@ -1,93 +1,105 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:goaly/models/goal_model.dart';
 import 'package:goaly/models/reminder_model.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
-class DatabaseService {
-  static FirebaseFirestore? _database;
+class DatabaseHelper {
+  static final DatabaseHelper _instance = DatabaseHelper._internal();
+  factory DatabaseHelper() => _instance;
+  static Database? _db;
 
-  static FirebaseFirestore get database {
-    _database ??= FirebaseFirestore.instance;
-    return _database!;
+  DatabaseHelper._internal();
+
+  Future<Database> get database async {
+    if (_db != null) return _db!;
+    _db = await _initDb();
+    return _db!;
   }
 
-  static Future<Goal> insertGoal(
-    String title,
-    String description,
-    List<int> weekDays,
-  ) async {
-    final newGoal = <String, dynamic>{
-      "title": title,
-      "description": description,
-      "weekdays": weekDays,
-      "status": "active",
-      "createdAt": FieldValue.serverTimestamp(),
-    };
-
-    final docRef = await database.collection("goals").add(newGoal);
-    final docSnapshot = await docRef.get();
-
-    return Goal.fromFirestore(docSnapshot);
+  Future<Database> _initDb() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'goaly.db');
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
-  static Future<List<Goal>> getAllGoals() async {
-    final goalsSnapshot = await FirebaseFirestore.instance
-        .collection('goals')
-        .get();
-    return goalsSnapshot.docs.map((doc) => Goal.fromFirestore(doc)).toList();
+  Future _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE goals (
+        id TEXT PRIMARY KEY,
+        title TEXT,
+        description TEXT,
+        weekDays TEXT, -- stored as JSON string
+        status TEXT,
+        createdAt TEXT
+      )
+    ''');
+    await db.execute('''
+  CREATE TABLE reminders (
+    id TEXT PRIMARY KEY,
+    goalId TEXT,
+    time TEXT,
+    FOREIGN KEY (goalId) REFERENCES goals (id) ON DELETE CASCADE
+  )
+''');
   }
 
-  static Future<void> updateGoal(
-    String goalId,
-    String title,
-    String description,
-    List<int> weekDays,
-  ) async {
-    await database.collection("goals").doc(goalId).update({
-      "title": title,
-      "description": description,
-      "weekdays": weekDays,
-      "updatedAt": FieldValue.serverTimestamp(),
-    });
+  Future<int> insertGoal(Goal goal) async {
+    final db = await database;
+    return await db.insert(
+      'goals',
+      goal.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
-  static Future<void> deleteGoal(String goalId) async {
-    await database.collection("goals").doc(goalId).delete();
+  Future<List<Goal>> getGoals() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('goals');
+    return List.generate(maps.length, (i) => Goal.fromMap(maps[i]));
   }
 
-  static Future<List<Reminder>> getAllReminders(String goalId) async {
-    final goalsSnapshot = await FirebaseFirestore.instance
-        .collection('reminders')
-        .where("goalId", isEqualTo: goalId)
-        .get();
-    return goalsSnapshot.docs.map((doc) => Reminder.fromFirestore(doc)).toList();
+  Future<int> updateGoal(Goal goal) async {
+    final db = await database;
+    return await db.update(
+      'goals',
+      goal.toMap(),
+      where: 'id = ?',
+      whereArgs: [goal.id],
+    );
   }
 
-    static Future<Reminder> insertReminder(
-      String goalId,
-    TimeOfDay time,
-  ) async {
-    final newGoal = <String, dynamic>{
-      "goalId": goalId,
-      "time": '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-      "createdAt": FieldValue.serverTimestamp(),
-    };
-    final docRef = await database.collection("reminders").add(newGoal);
-    final docSnapshot = await docRef.get();
-    return Reminder.fromFirestore(docSnapshot);
+  Future<int> deleteGoal(String id) async {
+    final db = await database;
+    return await db.delete('goals', where: 'id = ?', whereArgs: [id]);
   }
 
-    static Future<void> updateReminder(
-    String id,
-    TimeOfDay time,
-  ) async {
-    await database.collection("goals").doc(id).update({
-      "time": '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-      "updatedAt": FieldValue.serverTimestamp(),
-    });
+  Future<void> insertReminder(Reminder reminder) async {
+    final db = await database;
+    await db.insert('reminders', reminder.toJson());
   }
 
-  static Future<void> deleteReminder(String id) async {
-    await database.collection("reminders").doc(id).delete();
+  Future<void> updateReminder(Reminder reminder) async {
+  final db = await database;
+  await db.update(
+    'reminders',
+    reminder.toJson(),
+    where: 'id = ?',
+    whereArgs: [reminder.id],
+  );
+}
+
+  Future<List<Reminder>> getReminders(String goalId) async {
+    final db = await database;
+    final result = await db.query(
+      'reminders',
+      where: 'goalId = ?',
+      whereArgs: [goalId],
+    );
+    return result.map((r) => Reminder.fromJson(r)).toList();
+  }
+
+  Future<void> deleteReminder(String id) async {
+    final db = await database;
+    await db.delete('reminders', where: 'id = ?', whereArgs: [id]);
   }
 }

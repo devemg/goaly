@@ -19,7 +19,7 @@ class GoalsList extends StatelessWidget {
           final currentGoal = state.goals[index];
           return GestureDetector(
             onTap: (){
-               Navigator.push(context, MaterialPageRoute(builder: (context) => GoalDetailsPage(goalDetail: currentGoal)));
+               Navigator.push(context, MaterialPageRoute(builder: (context) => GoalDetailsPage(currentGoal: currentGoal)));
             },
             child: Card(
               child: Padding(

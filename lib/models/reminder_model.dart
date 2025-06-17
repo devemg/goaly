@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Reminder {
@@ -8,18 +7,21 @@ class Reminder {
 
   Reminder({this.id, required this.goalId, required this.time});
 
-  factory Reminder.fromJson(Map<String, dynamic> json) =>
-      Reminder(id: json['id'], goalId: json['goalId'], time: json['time']);
-
-  Map<String, dynamic> toJson() => {'id': id, 'goalId': goalId, 'time': time};
-
-  factory Reminder.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map;
-    final parts = data['time'].split(':');
+  factory Reminder.fromJson(Map<String, dynamic> json) {
+    final timeParts = (json['time'] as String).split(':');
     return Reminder(
-      id: doc.id,
-      goalId: data['goalId'],
-      time: TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1])),
+      id: json['id'],
+      goalId: json['goalId'],
+      time: TimeOfDay(
+        hour: int.parse(timeParts[0]),
+        minute: int.parse(timeParts[1]),
+      ),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'goalId': goalId,
+        'time': '${time.hour}:${time.minute}',
+      };
 }
