@@ -3,7 +3,7 @@ import 'package:goaly/models/goal_model.dart';
 
 class GoalItem extends StatelessWidget {
   final Goal goalItem;
-  const GoalItem({Key? key, required this.goalItem}) : super(key: key);
+  const GoalItem({super.key, required this.goalItem});
 
   @override
   Widget build(BuildContext context) {
